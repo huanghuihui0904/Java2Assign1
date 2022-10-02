@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -120,8 +118,9 @@ public class MovieAnalyzer {
 
     public static void main(String[] args) throws IOException {
         MovieAnalyzer mv=new MovieAnalyzer("./resources/imdb_top_500.csv");
-        mv.getMovieCountByYear();
-
+//        mv.getMovieCountByYear();
+//mv.getMovieCountByGenre();
+mv.getCoStarCount();
 
 
 
@@ -134,7 +133,7 @@ public class MovieAnalyzer {
         String line="";
         int num=0;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(dataset_path));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path),"UTF-8"));
             br.readLine();
             num++;
             while ((line = br.readLine()) != null) {
@@ -194,11 +193,171 @@ public class MovieAnalyzer {
 
         return re;
     }
+    public class node implements Comparable{
+        public int count;
+        public String genre;
+        public node(String  genre,int count){
+            this.count=count;
+            this.genre=genre;
+
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            node n=(node)o;
+            if(this.count==n.count){
+return this.genre.compareTo(n.genre);
+            }else {
+return n.count-this.count;
+            }
+
+        }
+    }
     public Map<String, Integer> getMovieCountByGenre(){
-        return null;
+
+
+
+
+         List<Movie> moviesList2=new ArrayList<>();
+        String line="";
+        int num=0;
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("./resources/imdb_top_500.csv"),"UTF-8"));
+            br.readLine();
+            num++;
+            while ((line = br.readLine()) != null) {
+                String[] b = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+                List<String> a = transferArrayToList(b);
+                if(a.size()==15){
+                    //no gross
+                    a.add("0");
+
+
+                }
+
+                if(a.get(3).contains("min")){
+                    //no certificate 3
+                    a.set(3,"");
+
+                } if(!isNumeric(a.get(8))) {
+                    //no mate_score 8
+                    a.set(8,"0");
+
+                }
+                String[] genres=a.get(5).replace("\"","").split(",");
+                for (int i = 0; i <genres.length ; i++) {
+                    Movie movie=new Movie(a.get(0).replace("\"",""),a.get(1).replace("\"",""),Integer.parseInt(a.get(2)),a.get(3).replace("\"",""),Integer.parseInt(a.get(4).replace(" min","")),genres[i].replaceAll(" ",""),Float.parseFloat(a.get(6)),a.get(7).replace("\"",""),Integer.parseInt(a.get(8)),a.get(9).replace("\"",""),a.get(10).replace("\"",""),a.get(11).replace("\"",""),a.get(12).replace("\"",""),a.get(13).replace("\"",""),Integer.parseInt(a.get(14)),Integer.parseInt(a.get(15).replace("\"","").replace(",","")));
+
+                    moviesList2.add(movie);
+                }
+//                Movie movie=new Movie(a.get(0).replace("\"",""),a.get(1).replace("\"",""),Integer.parseInt(a.get(2)),a.get(3).replace("\"",""),Integer.parseInt(a.get(4).replace(" min","")),a.get(5).replace("\"",""),Float.parseFloat(a.get(6)),a.get(7).replace("\"",""),Integer.parseInt(a.get(8)),a.get(9).replace("\"",""),a.get(10).replace("\"",""),a.get(11).replace("\"",""),a.get(12).replace("\"",""),a.get(13).replace("\"",""),Integer.parseInt(a.get(14)),Integer.parseInt(a.get(15).replace("\"","").replace(",","")));
+//
+//                moviesList2.add(movie);
+
+                num++;
+//                System.out.println(num);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+        Map<String, Long> map =moviesList2.stream().collect(Collectors.groupingBy(Movie::getGenre,Collectors.counting()));
+        Set<String> keySet = map.keySet();
+
+List<node> nodes=new ArrayList<>();
+        for (Iterator<String> it = keySet.iterator(); it.hasNext(); )
+        {
+            String key = it.next();
+            int value = Math.toIntExact(map.get(key));
+
+            nodes.add(new node(key,value));
+
+        }
+Collections.sort(nodes);
+///////////////////////////////////////////////////
+Map<String,Integer> re=new LinkedHashMap<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            re.put(nodes.get(i).genre,nodes.get(i).count);
+        }
+
+//        System.out.println(re);
+
+ ////////////////////////////////////////////////////////////////
+
+
+
+        return re;
+    }
+    public class costar{
+
+        List<String> cos=new ArrayList<>();
+        public costar(String a,String b){
+            if(a.compareTo(b)<=0){
+cos.add(a);
+cos.add(b);
+
+            }  else {
+                cos.add(b);
+                cos.add(a);
+            }
+
+        }
+        @Override
+        public int hashCode(){
+            int result=cos.get(0).hashCode()+cos.get(1).hashCode();
+            return result;
+        }
+        @Override
+        public boolean equals(Object o){
+            costar c=(costar) o;
+if(cos.get(0).equals(c.cos.get(0))&&cos.get(1).equals(c.cos.get(1))){
+    return true;
+}else {
+    return false;
+}
+        }
     }
     public Map<List<String>, Integer> getCoStarCount(){
-        return null;
+Map<costar,Integer> map=new HashMap<>();
+Integer count=0;
+        for (int i = 0; i < moviesList.size(); i++) {
+            costar[] c=new costar[6];
+
+             c[0]=new costar(moviesList.get(i).Star1,moviesList.get(i).Star2);
+            c[1]=new costar(moviesList.get(i).Star1,moviesList.get(i).Star3);
+            c[2]=new costar(moviesList.get(i).Star1,moviesList.get(i).Star4);
+            c[3]=new costar(moviesList.get(i).Star2,moviesList.get(i).Star3);
+            c[4]=new costar(moviesList.get(i).Star2,moviesList.get(i).Star4);
+            c[5]=new costar(moviesList.get(i).Star3,moviesList.get(i).Star4);
+
+            for (int j = 0; j < 6; j++) {
+                if ((count = map.get(c[j])) == null) {
+                    map.put(c[j], 1);
+                } else {
+                    map.put(c[j], 1 + count);
+                }
+            }
+        }
+
+//////////////////////////////////////////////////
+        Map<List<String>,Integer>re=new HashMap<>();
+//        Map<String, Long> map =moviesList2.stream().collect(Collectors.groupingBy(Movie::getGenre,Collectors.counting()));
+        Set<costar> keySet = map.keySet();
+
+//        List<node> nodes=new ArrayList<>();
+        for (Iterator<costar> it = keySet.iterator(); it.hasNext(); )
+        {
+            costar key = it.next();
+            int value = Math.toIntExact(map.get(key));
+if(value==2){
+//    System.out.println(key.cos);
+}
+
+re.put(key.cos,value);
+        }
+//        System.out.println(re);
+        return re;
     }
     public List<String> getTopMovies(int top_k, String by){
         return null;
