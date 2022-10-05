@@ -1,9 +1,6 @@
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MovieAnalyzer {
   static List<Movie> moviesList = new ArrayList<>();
@@ -92,7 +89,10 @@ public class MovieAnalyzer {
       return Gross;
     }
 
-    public Movie(String Poster_Link, String Series_Title, int Released_Year, String Certificate, int Runtime, String Genre, float IMDB_Rating, String Overview, int Meta_score, String Director, String Star1, String Star2, String Star3, String Star4, int Noofvotes, int Gross) {
+    public Movie(String Poster_Link, String Series_Title, int Released_Year, String Certificate,
+                 int Runtime, String Genre, float IMDB_Rating, String Overview, int Meta_score,
+                 String Director, String Star1, String Star2,
+                 String Star3, String Star4, int Noofvotes, int Gross) {
       this.Poster_Link = Poster_Link;
       this.Series_Title = Series_Title;
       this.Released_Year = Released_Year;
@@ -110,23 +110,15 @@ public class MovieAnalyzer {
       this.Noofvotes = Noofvotes;
       this.Gross = Gross;
     }
-//        public  String toString(){
-//
-//            return ;
-//
-//        }
+
 
   }
 
 
   public static void main(String[] args) throws IOException {
     MovieAnalyzer mv = new MovieAnalyzer("./resources/imdb_top_500.csv");
-//        mv.getMovieCountByYear();
-//mv.getMovieCountByGenre();
-//        mv.getCoStarCount();
     mv.getTopMovies(100, "overview");
-//        mv.getTopStars(100,"rating");
-//        mv.searchMovies("Adventure", 8.0f, 150);
+
 
   }
 
@@ -135,7 +127,8 @@ public class MovieAnalyzer {
     String line = "";
     int num = 0;
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path), "UTF-8"));
+      BufferedReader br = new BufferedReader
+          (new InputStreamReader(new FileInputStream(dataset_path), "UTF-8"));
       br.readLine();
       num++;
       while ((line = br.readLine()) != null) {
@@ -158,12 +151,18 @@ public class MovieAnalyzer {
           a.set(8, "0");
 
         }
-        Movie movie = new Movie(a.get(0).replace("\"", ""), a.get(1).replace("\"", ""), Integer.parseInt(a.get(2)), a.get(3).replace("\"", ""), Integer.parseInt(a.get(4).replace(" min", "")), a.get(5).replace("\"", ""), Float.parseFloat(a.get(6)), clearStartAndEndQuote(a.get(7)), Integer.parseInt(a.get(8)), a.get(9).replace("\"", ""), a.get(10).replace("\"", ""), a.get(11).replace("\"", ""), a.get(12).replace("\"", ""), a.get(13).replace("\"", ""), Integer.parseInt(a.get(14)), Integer.parseInt(a.get(15).replace("\"", "").replace(",", "")));
+        Movie movie = new Movie(a.get(0).replace("\"", ""), a.get(1).replace("\"", ""),
+            Integer.parseInt(a.get(2)), a.get(3).replace("\"", ""),
+            Integer.parseInt(a.get(4).replace(" min", "")),
+            a.get(5).replace("\"", ""), Float.parseFloat(a.get(6)),
+            clearStartAndEndQuote(a.get(7)), Integer.parseInt(a.get(8)), a.get(9).replace("\"", ""),
+            a.get(10).replace("\"", ""), a.get(11).replace("\"", ""),
+            a.get(12).replace("\"", ""), a.get(13).replace("\"", ""),
+            Integer.parseInt(a.get(14)), Integer.parseInt(a.get(15).replace("\"", "").replace(",", "")));
 
         moviesList.add(movie);
 
         num++;
-//                System.out.println(num);
       }
 
     } catch (IOException e) {
@@ -190,7 +189,6 @@ public class MovieAnalyzer {
       re.put(key, value);
 
     }
-//        System.out.println(re);
 
 
     return re;
@@ -232,7 +230,6 @@ public class MovieAnalyzer {
 
   public Map<String, Integer> getMovieCountByGenre() {
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
     List<Genre> temp = new ArrayList<>();
     for (int i = 0; i < moviesList.size(); i++) {
@@ -243,9 +240,7 @@ public class MovieAnalyzer {
     }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
-//        Map<String, Long> map = moviesList2.stream().collect(Collectors.groupingBy(Movie::getGenre, Collectors.counting()));
     Map<String, Long> map = temp.stream().collect(Collectors.groupingBy(Genre::getGenreName, Collectors.counting()));
 
     Set<String> keySet = map.keySet();
@@ -259,21 +254,18 @@ public class MovieAnalyzer {
 
     }
     Collections.sort(nodes);
-///////////////////////////////////////////////////
+
     Map<String, Integer> re = new LinkedHashMap<>();
     for (int i = 0; i < nodes.size(); i++) {
       re.put(nodes.get(i).genre, nodes.get(i).count);
     }
 
-//        System.out.println(re);
 
-    ////////////////////////////////////////////////////////////////
     System.out.println(re);
 
     return re;
   }
 
-  /////////////////////////////////////////////////////////////////
   public class costar {
 
     List<String> cos = new ArrayList<>();
@@ -329,26 +321,20 @@ public class MovieAnalyzer {
       }
     }
 
-//////////////////////////////////////////////////
     Map<List<String>, Integer> re = new HashMap<>();
-//        Map<String, Long> map =moviesList2.stream().collect(Collectors.groupingBy(Movie::getGenre,Collectors.counting()));
     Set<costar> keySet = map.keySet();
 
-//        List<node> nodes=new ArrayList<>();
     for (Iterator<costar> it = keySet.iterator(); it.hasNext(); ) {
       costar key = it.next();
       int value = Math.toIntExact(map.get(key));
       if (value == 2) {
-//    System.out.println(key.cos);
       }
 
       re.put(key.cos, value);
     }
-//        System.out.println(re);
     return re;
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////
   public class movie_t implements Comparable {
 
     String movie_name = "";
@@ -360,11 +346,7 @@ public class MovieAnalyzer {
 
     }
 
-//    @Override
-//    public int hashCode() {
-//        int result = cos.get(0).hashCode() + cos.get(1).hashCode();
-//        return result;
-//    }
+
 
     @Override
     public int compareTo(Object o) {
@@ -391,17 +373,13 @@ public class MovieAnalyzer {
     } else {
       for (int i = 0; i < moviesList.size(); i++) {
         mt.add(new movie_t(moviesList.get(i).Series_Title, moviesList.get(i).Overview.length()));
-//               if(moviesList.get(i).Series_Title.equals("Indiana Jones and the Last Crusade")||moviesList.get(i).Series_Title.equals("Ace in the Hole")){
-//                   System.out.println(moviesList.get(i).Overview);
-//
-//               }
+
       }
     }
 
     Collections.sort(mt);
     List<String> re = new LinkedList<>();
     for (int i = 0; i < top_k; i++) {
-//            System.out.println(mt.get(i).movie_name);
 
       re.add(mt.get(i).movie_name);
     }
@@ -409,7 +387,6 @@ public class MovieAnalyzer {
     return re;
   }
 
-  ////////////////////////////////////////////////////////
   public class star_t implements Comparable {
 
     String star_name = "";
@@ -421,11 +398,7 @@ public class MovieAnalyzer {
 
     }
 
-//    @Override
-//    public int hashCode() {
-//        int result = cos.get(0).hashCode() + cos.get(1).hashCode();
-//        return result;
-//    }
+
 
     @Override
     public int compareTo(Object o) {
@@ -477,8 +450,6 @@ public class MovieAnalyzer {
       map = st.stream().collect(Collectors.groupingBy(star_t::getStar_name, Collectors.averagingDouble(star_t::getT)));
 
     }
-/////////////////////////////////////////////////////////////
-//        Map<String, Long> map = moviesList2.stream().collect(Collectors.groupingBy(Movie::getGenre, Collectors.counting()));
     Set<String> keySet = map.keySet();
 
     List<star_t> nodes = new ArrayList<>();
@@ -491,11 +462,8 @@ public class MovieAnalyzer {
     }
     Collections.sort(nodes);
 
-/////////////////////////////////////////////////
-//        Collections.sort(st);
     List<String> re = new ArrayList<>();
     for (int i = 0; i < top_k; i++) {
-//            System.out.println(nodes.get(i).star_name);
 
       re.add(nodes.get(i).star_name);
     }
@@ -512,21 +480,19 @@ public class MovieAnalyzer {
       }
     }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
     List<String> re = new ArrayList<>();
     for (int i = 0; i < moviesList.size(); i++) {
-      if (moviesList.get(i).Genre.contains(genre) && moviesList.get(i).IMDB_Rating >= min_rating && moviesList.get(i).Runtime <= max_runtime) {
+      if (moviesList.get(i).Genre.contains(genre) && moviesList.get(i).IMDB_Rating >= min_rating
+          && moviesList.get(i).Runtime <= max_runtime) {
 
         re.add(moviesList.get(i).Series_Title);
 
 
-//                System.out.println(moviesList2.get(i).Series_Title);
       }
     }
     Collections.sort(re);
     for (int i = 0; i < re.size(); i++) {
-//            System.out.println(re.get(i));
     }
 
     return re;
@@ -544,10 +510,10 @@ public class MovieAnalyzer {
 
   public static String clearStartAndEndQuote(String str) {
     if (str != null && str.length() >= 2) {
-      if (str.indexOf("\"") == 0) str = str.substring(1, str.length());
-      if (str.lastIndexOf("\"") == (str.length() - 1)) str = str.substring(0, str.length() - 1);
+      if (str.indexOf("\"") == 0){ str = str.substring(1, str.length());}
+      if (str.lastIndexOf("\"") == (str.length() - 1)){ str = str.substring(0, str.length() - 1);}
 
-//            str = str.replaceAll("\"\"","\"");
+
     }
     return str;
   }
