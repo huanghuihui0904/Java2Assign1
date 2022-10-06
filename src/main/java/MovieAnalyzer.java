@@ -127,8 +127,8 @@ public class MovieAnalyzer {
     String line = "";
     int num = 0;
     try {
-      BufferedReader br = new BufferedReader
-          (new InputStreamReader(new FileInputStream(dataset_path), "UTF-8"));
+      BufferedReader br = new BufferedReader(
+          new InputStreamReader(new FileInputStream(dataset_path), "UTF-8"));
       br.readLine();
       num++;
       while ((line = br.readLine()) != null) {
@@ -158,7 +158,8 @@ public class MovieAnalyzer {
             clearStartAndEndQuote(a.get(7)), Integer.parseInt(a.get(8)), a.get(9).replace("\"", ""),
             a.get(10).replace("\"", ""), a.get(11).replace("\"", ""),
             a.get(12).replace("\"", ""), a.get(13).replace("\"", ""),
-            Integer.parseInt(a.get(14)), Integer.parseInt(a.get(15).replace("\"", "").replace(",", "")));
+            Integer.parseInt(a.get(14)),
+            Integer.parseInt(a.get(15).replace("\"", "").replace(",", "")));
 
         moviesList.add(movie);
 
@@ -173,7 +174,8 @@ public class MovieAnalyzer {
   }
 
   public Map<Integer, Integer> getMovieCountByYear() {
-    Map<Integer, Long> map = moviesList.stream().collect(Collectors.groupingBy(Movie::getReleased_Year, Collectors.counting()));
+    Map<Integer, Long> map = moviesList.stream().collect(Collectors
+        .groupingBy(Movie::getReleased_Year, Collectors.counting()));
     Map<Integer, Integer> re = new TreeMap<>(new Comparator<Integer>() {
       @Override
       public int compare(Integer o1, Integer o2) {
@@ -240,8 +242,8 @@ public class MovieAnalyzer {
     }
 
 
-
-    Map<String, Long> map = temp.stream().collect(Collectors.groupingBy(Genre::getGenreName, Collectors.counting()));
+    Map<String, Long> map = temp.stream()
+        .collect(Collectors.groupingBy(Genre::getGenreName, Collectors.counting()));
 
     Set<String> keySet = map.keySet();
 
@@ -327,8 +329,7 @@ public class MovieAnalyzer {
     for (Iterator<costar> it = keySet.iterator(); it.hasNext(); ) {
       costar key = it.next();
       int value = Math.toIntExact(map.get(key));
-      if (value == 2) {
-      }
+
 
       re.put(key.cos, value);
     }
@@ -345,7 +346,6 @@ public class MovieAnalyzer {
       this.t = t;
 
     }
-
 
 
     @Override
@@ -399,7 +399,6 @@ public class MovieAnalyzer {
     }
 
 
-
     @Override
     public int compareTo(Object o) {
       star_t o2 = (star_t) o;
@@ -409,7 +408,9 @@ public class MovieAnalyzer {
       } else {
         if (o2.t > t) {
           return 1;
-        } else return -1;
+        } else {
+          return -1;
+        }
       }
     }
 
@@ -436,7 +437,8 @@ public class MovieAnalyzer {
         }
 
       }
-      map = st.stream().collect(Collectors.groupingBy(star_t::getStar_name, Collectors.averagingDouble(star_t::getT)));
+      map = st.stream().collect(Collectors
+          .groupingBy(star_t::getStar_name, Collectors.averagingDouble(star_t::getT)));
     } else {
       for (int i = 0; i < moviesList.size(); i++) {
         if (moviesList.get(i).Gross != 0) {
@@ -447,7 +449,8 @@ public class MovieAnalyzer {
         }
 
       }
-      map = st.stream().collect(Collectors.groupingBy(star_t::getStar_name, Collectors.averagingDouble(star_t::getT)));
+      map = st.stream().collect(Collectors
+          .groupingBy(star_t::getStar_name, Collectors.averagingDouble(star_t::getT)));
 
     }
     Set<String> keySet = map.keySet();
@@ -510,8 +513,12 @@ public class MovieAnalyzer {
 
   public static String clearStartAndEndQuote(String str) {
     if (str != null && str.length() >= 2) {
-      if (str.indexOf("\"") == 0){ str = str.substring(1, str.length());}
-      if (str.lastIndexOf("\"") == (str.length() - 1)){ str = str.substring(0, str.length() - 1);}
+      if (str.indexOf("\"") == 0) {
+        str = str.substring(1, str.length());
+      }
+      if (str.lastIndexOf("\"") == (str.length() - 1)) {
+        str = str.substring(0, str.length() - 1);
+      }
 
 
     }
