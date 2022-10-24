@@ -9,9 +9,9 @@ public class MovieAnalyzer {
     String Poster_Link;
     String Series_Title;
     int Released_Year;
-    String    Certificate;
+    String Certificate;
     int Runtime;
-    String    Genre;
+    String Genre;
 
 
     float IMDB_Rating;
@@ -53,7 +53,7 @@ public class MovieAnalyzer {
       return IMDB_Rating;
     }
 
-    public    String getOverview() {
+    public String getOverview() {
       return Overview;
     }
 
@@ -115,7 +115,7 @@ public class MovieAnalyzer {
   }
 
 
-  public static void      main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
     MovieAnalyzer mv = new MovieAnalyzer("./resources/imdb_top_500.csv");
     mv.getTopMovies(100, "overview");
 
@@ -151,16 +151,14 @@ public class MovieAnalyzer {
           a.set(8, "0");
 
         }
-        Movie movie =     new Movie(a.get(0).replace("\"", ""), a.get(1).replace("\"", ""), Integer.parseInt(a.get(2)), a.get(3).replace("\"", ""), Integer.parseInt(a.get(4).replace(" min", "")), a.get(5).replace("\"", ""), Float.parseFloat(a.get(6)),
-
+        Movie movie = new Movie(a.get(0).replace("\"", ""), a.get(1).replace("\"", ""),
+            Integer.parseInt(a.get(2)), a.get(3).replace("\"", ""),
+            Integer.parseInt(a.get(4).replace(" min", "")),
+            a.get(5).replace("\"", ""), Float.parseFloat(a.get(6)),
             clearStartAndEndQuote(a.get(7)), Integer.parseInt(a.get(8)), a.get(9).replace("\"", ""),
-
             a.get(10).replace("\"", ""), a.get(11).replace("\"", ""),
-
             a.get(12).replace("\"", ""), a.get(13).replace("\"", ""),
-
             Integer.parseInt(a.get(14)),
-
             Integer.parseInt(a.get(15).replace("\"", "").replace(",", "")));
 
         moviesList.add(movie);
@@ -176,7 +174,8 @@ public class MovieAnalyzer {
   }
 
   public Map<Integer, Integer> getMovieCountByYear() {
-    Map<Integer, Long> map = moviesList.stream().collect(Collectors.groupingBy(Movie::getReleased_Year, Collectors.counting()));
+    Map<Integer, Long> map = moviesList.stream().collect(Collectors
+        .groupingBy(Movie::getReleased_Year, Collectors.counting()));
     Map<Integer, Integer> re = new TreeMap<>(new Comparator<Integer>() {
       @Override
       public int compare(Integer o1, Integer o2) {
@@ -205,12 +204,6 @@ public class MovieAnalyzer {
       this.count = count;
       this.genre = genre;
 
-
-
-
-
-
-
     }
 
     @Override
@@ -221,9 +214,6 @@ public class MovieAnalyzer {
       } else {
         return n.count - count;
       }
-
-
-
 
     }
   }
@@ -244,13 +234,16 @@ public class MovieAnalyzer {
 
 
     List<Genre> temp = new ArrayList<>();
-    for (int i = 0; i < moviesList.size(); i++) {String[] genres = moviesList.get(i).Genre.replaceAll(" ", "").split(",");
-      for (int j = 0; j < genres.length; j++) {temp.add(new Genre(genres[j]));
+    for (int i = 0; i < moviesList.size(); i++) {
+      String[] genres = moviesList.get(i).Genre.replaceAll(" ", "").split(",");
+      for (int j = 0; j < genres.length; j++) {
+        temp.add(new Genre(genres[j]));
       }
     }
 
 
-    Map<String, Long> map = temp.stream().collect(Collectors.groupingBy(Genre::getGenreName, Collectors.counting()));
+    Map<String, Long> map = temp.stream()
+        .collect(Collectors.groupingBy(Genre::getGenreName, Collectors.counting()));
 
     Set<String> keySet = map.keySet();
 
@@ -258,8 +251,6 @@ public class MovieAnalyzer {
     for (Iterator<String> it = keySet.iterator(); it.hasNext(); ) {
       String key = it.next();
       int value = Math.toIntExact(map.get(key));
-
-
 
       nodes.add(new node(key, value));
 
@@ -295,14 +286,17 @@ public class MovieAnalyzer {
 
     @Override
     public int hashCode() {
-      int result = cos.get(0).hashCode() + cos.get(1).hashCode();return result;
+      int result = cos.get(0).hashCode() + cos.get(1).hashCode();
+      return result;
     }
 
     @Override
     public boolean equals(Object o) {
       costar c = (costar) o;
-      if (cos.get(0).equals(c.cos.get(0)) && cos.get(1).equals(c.cos.get(1))) {return true;
-      } else {return false;
+      if (cos.get(0).equals(c.cos.get(0)) && cos.get(1).equals(c.cos.get(1))) {
+        return true;
+      } else {
+        return false;
       }
     }
   }
